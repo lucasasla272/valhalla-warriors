@@ -126,3 +126,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+LOGIN_URL = 'torneo:login'
+LOGIN_REDIRECT_URL = 'torneo:home'
+LOGOUT_REDIRECT_URL = 'torneo:home'

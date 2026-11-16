@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Valhalla Warriors{% endblock %}</title>
+    <style>
+        :root { --fondo: #14100a; --panel: #1f1913; --texto: #ece5d8; --oro: #d4af37; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--fondo); color: var(--texto);
+               font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh;
+               display: flex; flex-direction: column; }
+        nav { background: var(--panel); padding: 14px 22px;
+              display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: var(--oro); text-decoration: none; font-weight: bold; margin-left: 14px; }
+        nav .marca { font-size: 1.15rem; margin-left: 0; }
+        nav .hola { color: #9a8f7d; font-size: 0.9rem; margin-left: 14px; }
+        .logout-form { display: inline; }
+        .logout-form button { background: none; border: none; color: var(--oro);
+                              cursor: pointer; font-size: 0.95rem; font-weight: bold; padding: 0; margin-left: 14px; }
+        main { flex: 1; padding: 32px 22px; max-width: 900px; width: 100%; margin: 0 auto; }
+        footer { padding: 14px; text-align: center; color: #7a7263; font-size: 0.85rem; }
+
+        /* tarjetas (listados) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px; margin-top: 20px; }
+        .card { background: var(--panel); border: 1px solid #3a3226; border-radius: 12px; padding: 20px; }
+        .card h3 { color: var(--oro); margin-bottom: 6px; }
+        .card p { color: #b5ab98; font-size: 0.9rem; margin-bottom: 12px; }
+
+        button { background: var(--oro); color: #14100a; border: none; border-radius: 8px;
+                 padding: 9px 18px; font-weight: bold; cursor: pointer; }
+        a { color: var(--oro); }
+        .msg-success { background: #2a3a20; color: #9fd47a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
+        .msg-error { background: #3d2222; color: #e07a7a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a class="marca" href="{% url 'torneo:home' %}">🪓 Valhalla Warriors</a>
+        <div>
+            <a href="{% url 'torneo:home' %}">Inicio</a>
+            <a href="{% url 'torneo:juegos' %}">Juegos</a>
+            {% if user.is_authenticated %}
+                <span class="hola">Hola, {{ user.username|capfirst }}</span>
+                <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit">Salir</button>
+                </form>
+            {% else %}
+                <a href="{% url 'torneo:login' %}">Entrar</a>
+                <a href="{% url 'torneo:registro' %}">Unirse al torneo</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>Proyecto final - Valhalla Warriors</footer>
+</body>
+</html>

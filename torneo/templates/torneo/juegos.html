@@ -1,0 +1,35 @@
+{% extends "torneo/base.html" %}
+{% block title %}Juegos del torneo | Valhalla Warriors{% endblock %}
+{% block content %}
+    <h1>⚔️ Juegos del torneo</h1>
+
+    {% if messages %}
+        {% for m in messages %}
+            <p class="msg-{{ m.tags }}">{{ m }}</p> 
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid">
+        {% for juego in juegos %}
+            <div class="card">
+                <h3>{{ juego.nombre }}</h3>
+                <p>{{ juego.genero }}</p>
+                {% if user.is_authenticated %}
+                    {% if juego.id in mis_ids %}
+                        <form method="post" action="{% url 'torneo:desinscribir' juego.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Desinscribirme</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'torneo:inscribir' juego.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Inscribirme</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Todavía no hay juegos cargados en el torneo.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

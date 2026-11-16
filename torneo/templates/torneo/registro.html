@@ -1,0 +1,13 @@
+{% extends "torneo/base.html" %}
+{% block title %}Unirse al torneo | Valhalla Warriors{% endblock %}
+{% block content %}
+    <div class="card">
+        <h1>Registro de gladiador</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Unirse al torneo</button>
+        </form>
+        <p style="margin-top:10px"><a href="{% url 'torneo:login' %}">¿Ya tenés cuenta? Entrá al Valhalla</a></p>
+    </div>
+{% endblock %}
