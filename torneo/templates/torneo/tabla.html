@@ -1,29 +1,30 @@
 {% extends "torneo/base.html" %}
 {% block title %}Tabla de posiciones | Valhalla Warriors{% endblock %}
 {% block content %}
-    <h1>🏆 Tabla de posiciones</h1>
-    <table style="width:100%; border-collapse:collapse; margin-top:16px;">
-        <tr style="color: var(--oro);">
-            <th style="text-align:left; padding:8px;">#</th>
-            <th style="text-align:left; padding:8px;">Guerrero</th>
-            <th style="padding:8px;">PJ</th>
-            <th style="padding:8px;">PG</th>
-            <th style="padding:8px;">PE</th>
-            <th style="padding:8px;">PP</th>
-            <th style="padding:8px;">PTS</th>
+{% load static %}
+    <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Tabla de posiciones</h1>
+    <table class="tabla">
+        <tr>
+            <th>#</th>
+            <th>Guerrero</th>
+            <th class="c">PJ</th>
+            <th class="c">PG</th>
+            <th class="c">PE</th>
+            <th class="c">PP</th>
+            <th class="c">PTS</th>
         </tr>
         {% for f in tabla %}
-            <tr style="border-top:1px solid #3a3226;">
-                <td style="padding:8px;">{{ forloop.counter }}</td>
-                <td style="padding:8px;">{{ f.jugador.user.username }}</td>
-                <td style="padding:8px; text-align:center;">{{ f.pj }}</td>
-                <td style="padding:8px; text-align:center;">{{ f.pg }}</td>
-                <td style="padding:8px; text-align:center;">{{ f.pe }}</td>
-                <td style="padding:8px; text-align:center;">{{ f.pp }}</td>
-                <td style="padding:8px; text-align:center; color: var(--oro); font-weight:bold;">{{ f.pts }}</td>
+            <tr>
+                <td class="p{{ forloop.counter }}">{{ forloop.counter }}</td>
+                <td>{{ f.jugador.user.username }}</td>
+                <td class="c">{{ f.pj }}</td>
+                <td class="c">{{ f.pg }}</td>
+                <td class="c">{{ f.pe }}</td>
+                <td class="c">{{ f.pp }}</td>
+                <td class="c oro">{{ f.pts }}</td>
             </tr>
         {% empty %}
-            <tr><td colspan="7" style="padding:8px;">Todavía no se jugaron partidos.</td></tr>
+            <tr><td colspan="7">Todavía no se jugaron partidos.</td></tr>
         {% endfor %}
     </table>
 {% endblock %}

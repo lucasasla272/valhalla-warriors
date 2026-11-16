@@ -1,7 +1,8 @@
 {% extends "torneo/base.html" %}
 {% block title %}Estadísticas | Valhalla Warriors{% endblock %}
 {% block content %}
-    <h1>📊 Estadísticas del torneo</h1>
+{% load static %}
+    <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Estadísticas del torneo</h1>
 
     <h2 style="margin-top:20px;">Puntos por guerrero</h2>
     <canvas id="grafico-puntos" style="max-width:700px;"></canvas>

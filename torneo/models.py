@@ -5,6 +5,7 @@ from django.db import models
 class Juego(models.Model):
     nombre = models.CharField(max_length=100)
     genero = models.CharField(max_length=50)
+    imagen = models.ImageField(upload_to="juegos/", blank=True, null=True)
 
     class Meta:
         ordering = ["nombre"]

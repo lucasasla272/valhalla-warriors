@@ -1,0 +1,12 @@
+{% extends "torneo/base.html" %}
+{% load static %}
+{% block title %}Ruta caída en batalla | Valhalla Warriors{% endblock %}
+{% block content %}
+    <div class="fondo-epico"></div>
+    <div style="text-align:center; margin-top:70px;">
+        <img src="{% static 'torneo/img/valhalla-logo.png' %}" alt="" style="height:80px; margin-bottom:24px; opacity:.85;">
+        <h1>404 — Esta ruta cayó en batalla</h1>
+        <p style="color:#b5ab98; margin:16px 0 28px;">Ni los dioses conocen este camino. Volvé al Valhalla, guerrero.</p>
+        <a class="btn-cta" href="{% url 'torneo:home' %}">Volver al Valhalla</a>
+    </div>
+{% endblock %}

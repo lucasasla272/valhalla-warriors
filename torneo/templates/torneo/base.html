@@ -1,60 +1,121 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Valhalla Warriors{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'torneo/img/valhalla-logo.png' %}">
+
+    <!-- Fuente épica para títulos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+
     <style>
-        :root { --fondo: #14100a; --panel: #1f1913; --texto: #ece5d8; --oro: #d4af37; }
+        :root { --fondo: #14100a; --panel: #1f1913; --texto: #ece5d8; --oro: #d4af37; --oro-oscuro: #b8952e; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--fondo); color: var(--texto);
                font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh;
                display: flex; flex-direction: column; }
-        nav { background: var(--panel); padding: 14px 22px;
-              display: flex; justify-content: space-between; align-items: center; }
+        ::selection { background: var(--oro); color: #14100a; }
+
+        /* tipografia epica en titulos */
+        h1, h2, nav .marca { font-family: 'Cinzel', 'Times New Roman', serif; }
+
+        nav { background: var(--panel); padding: 12px 22px;
+              display: flex; justify-content: space-between; align-items: center;
+              border-bottom: 2px solid #3a3226; }
         nav a { color: var(--oro); text-decoration: none; font-weight: bold; margin-left: 14px; }
-        nav .marca { font-size: 1.15rem; margin-left: 0; }
+        nav a:hover { color: #f0d878; }
+        nav .marca { font-size: 1.2rem; margin-left: 0; letter-spacing: 1px; }
+        nav .marca img { height: 30px; vertical-align: -8px; margin-right: 8px; }
         nav .hola { color: #9a8f7d; font-size: 0.9rem; margin-left: 14px; }
         .logout-form { display: inline; }
         .logout-form button { background: none; border: none; color: var(--oro);
                               cursor: pointer; font-size: 0.95rem; font-weight: bold; padding: 0; margin-left: 14px; }
-        main { flex: 1; padding: 32px 22px; max-width: 900px; width: 100%; margin: 0 auto; }
-        footer { padding: 14px; text-align: center; color: #7a7263; font-size: 0.85rem; }
+        .logout-form button:hover { color: #f0d878; }
 
-        /* tarjetas (listados) */
+        main { flex: 1; padding: 32px 22px; max-width: 900px; width: 100%; margin: 0 auto; }
+        footer { padding: 16px; text-align: center; color: #7a7263; font-size: 0.85rem;
+                 border-top: 2px solid #3a3226; letter-spacing: 1px; }
+
+        /* tarjetas con hover vikingo */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 16px; margin-top: 20px; }
-        .card { background: var(--panel); border: 1px solid #3a3226; border-radius: 12px; padding: 20px; }
-        .card h3 { color: var(--oro); margin-bottom: 6px; }
+        .card { background: var(--panel); border: 1px solid #3a3226; border-radius: 12px;
+                padding: 20px; transition: transform .15s, border-color .15s; }
+        .card:hover { transform: translateY(-4px); border-color: var(--oro); }
+        .card h3 { color: var(--oro); margin-bottom: 6px; font-family: 'Cinzel', serif; }
         .card p { color: #b5ab98; font-size: 0.9rem; margin-bottom: 12px; }
 
-        button { background: var(--oro); color: #14100a; border: none; border-radius: 8px;
-                 padding: 9px 18px; font-weight: bold; cursor: pointer; }
+        /* botones con brillo de forja */
+        button { background: linear-gradient(180deg, #e6c452, var(--oro-oscuro)); color: #14100a;
+                 border: 1px solid #8a6d1f; border-radius: 8px; padding: 9px 18px;
+                 font-weight: bold; cursor: pointer; transition: filter .15s, transform .1s; }
+        button:hover { filter: brightness(1.12); }
+        button:active { transform: scale(0.97); }
+
         a { color: var(--oro); }
-        .msg-success { background: #2a3a20; color: #9fd47a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
-        .msg-error { background: #3d2222; color: #e07a7a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; }
+        .msg-success { background: #2a3a20; color: #9fd47a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; border: 1px solid #3f5a2e; }
+        .msg-error { background: #3d2222; color: #e07a7a; padding: 10px 14px; border-radius: 8px; margin: 10px 0; border: 1px solid #5a2e2e; }
+
+        /* tabla vikinga (reemplaza los estilos inline) */
+        .tabla { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .tabla th { color: var(--oro); font-family: 'Cinzel', serif; letter-spacing: 1px;
+                    text-align: left; padding: 10px 8px; border-bottom: 2px solid #3a3226; }
+        .tabla td { padding: 10px 8px; border-top: 1px solid #3a3226; }
+        .tabla tr:hover td { background: #241d14; }
+                .tabla .c { text-align: center; }
+        .tabla .oro { color: var(--oro); font-weight: bold; }
+        .res-v { color: #9fd47a; font-weight: bold; }
+        .res-e { color: #c9c9c9; }
+        .res-d { color: #e07a7a; font-weight: bold; }
+        .hero { text-align: center; margin-top: 10px; }
+        .hero .sub { color: #b5ab98; margin-top: 10px; }
+        .hero .runas { color: var(--oro); letter-spacing: 10px; margin: 20px 0; font-size: 1.15rem; }
+        .btn-cta { display: inline-block; background: linear-gradient(180deg, #e6c452, #b8952e);
+                   color: #14100a; border: 1px solid #8a6d1f; border-radius: 8px;
+                   padding: 13px 30px; font-weight: bold; text-decoration: none;
+                   font-family: 'Cinzel', serif; letter-spacing: 1px; transition: filter .15s; }
+        .btn-cta:hover { filter: brightness(1.12); }
+        .imagen-home { display: block; max-width: 100%; border-radius: 12px;
+                       margin: 30px auto 0; border: 1px solid #3a3226; }
+        .tabla .p1 { color: #ffd700; font-weight: bold; font-size: 1.15rem; text-shadow: 0 0 12px rgba(255, 215, 0, .45); }
+        .tabla .p2 { color: #c0c0c0; font-weight: bold; }
+        .tabla .p3 { color: #cd7f32; font-weight: bold; }
+        .fondo-epico { position: fixed; inset: 0; z-index: -1;
+                       background: url('/static/torneo/img/valhalla-home.png') center/cover;
+                       filter: brightness(0.25) blur(3px); }
+         @keyframes aparecer { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        .hero { animation: aparecer .6s ease both; }
+        .imagen-home { animation: aparecer .8s .15s ease both; }
+        .icono-titulo { height: 30px; vertical-align: -6px; margin-right: 10px; }
     </style>
 </head>
 <body>
     <nav>
-        <a class="marca" href="{% url 'torneo:home' %}">🪓 Valhalla Warriors</a>
+        <a class="marca" href="{% url 'torneo:home' %}">
+            <img src="{% static 'torneo/img/valhalla-logo.png' %}" alt="Hachas cruzadas">
+            Valhalla Warriors
+        </a>
         <div>
             <a href="{% url 'torneo:home' %}">Inicio</a>
             <a href="{% url 'torneo:juegos' %}">Juegos</a>
             <a href="{% url 'torneo:tabla' %}">Tabla</a>
             <a href="{% url 'torneo:estadisticas' %}">Estadísticas</a>
             {% if user.is_authenticated %}
-            <span class="hola">Hola, {{ user.username|capfirst }}</span>
-            {% if user.jugador %}
-            <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
-            {% endif %}
-            <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
+                <span class="hola">Hola, {{ user.username|capfirst }}</span>
+                {% if user.jugador %}
+                    <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
+                {% endif %}
+                <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit">Salir</button>
-            </form>
-        {% else %}
-            <a href="{% url 'torneo:login' %}">Entrar</a>
-            <a href="{% url 'torneo:registro' %}">Unirse al torneo</a>
-        {% endif %}
+                </form>
+            {% else %}
+                <a href="{% url 'torneo:login' %}">Entrar</a>
+                <a href="{% url 'torneo:registro' %}">Unirse al torneo</a>
+            {% endif %}
         </div>
     </nav>
 
@@ -67,6 +128,6 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer>Proyecto final - Valhalla Warriors</footer>
+    <footer>Proyecto final - Valhalla Warriors · ᚠᚢᚦ ᚨᚱᛖ ᚷᛟᛞ ·</footer>
 </body>
 </html>

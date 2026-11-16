@@ -19,6 +19,7 @@ def registro(request):
         if form.is_valid():
             user = form.save()
             Jugador.objects.create(user=user, nivel=form.cleaned_data["nivel"])
+            messages.success(request, f"¡Bienvenido al Valhalla, {user.username}! Iniciá sesión para entrar a la batalla.")
             return redirect("torneo:login")
     else:
         form = RegistroForm()

@@ -1,10 +1,14 @@
 {% extends "torneo/base.html" %}
 {% load static %}
-{% block title %}Valhalla Warriors{% endblock %}
 {% block content %}
-    <h1>⚔️ Bienvenido a Valhalla Warriors</h1>
-    <p>El torneo donde los guerreros compiten por la gloria. Registrate, elegí tu juego y pelea por el primer puesto de la tabla.</p>
-    <img src="{% static 'torneo/img/valhalla-home.png' %}" alt="Salón dorado del Valhalla"
-         style="max-width:100%; border-radius:12px; margin-top:24px; border:1px solid #3a3226;">
-    </main>
+    <div class="hero">
+        <h1>Bienvenido a Valhalla Warriors</h1>
+        <p class="sub">El torneo donde los guerreros compiten por la gloria. Registrate, elegí tu juego y peleá por el primer puesto de la tabla.</p>
+        <p class="runas">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ</p>
+        {% if not user.is_authenticated %}
+            <a class="btn-cta" href="{% url 'torneo:registro' %}">Unirse al torneo</a>
+        {% endif %}
+    </div>
+
+    <img src="{% static 'torneo/img/valhalla-home.png' %}" alt="Salón dorado del Valhalla" class="imagen-home">
 {% endblock %}

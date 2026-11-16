@@ -1,8 +1,9 @@
 {% extends "torneo/base.html" %}
 {% block title %}Unirse al torneo | Valhalla Warriors{% endblock %}
 {% block content %}
-    <div class="card">
-        <h1>Registro de gladiador</h1>
+<div class="fondo-epico"></div>
+    <div class="card" style="margin: 60px auto 0;">
+        <h1>Registro de berserker</h1>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

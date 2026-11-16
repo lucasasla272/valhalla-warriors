@@ -1,5 +1,6 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from torneo.forms import LoginFormulario
 from . import views
 
 app_name = "torneo"
@@ -15,4 +16,8 @@ urlpatterns = [
     path("tabla/", views.tabla_posiciones, name="tabla"),
     path("mis-partidos/", views.mis_partidos, name="mis_partidos"),
     path("estadisticas/", views.estadisticas, name="estadisticas"),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='torneo/login.html',
+        authentication_form=LoginFormulario,
+    ), name='login'),
 ]

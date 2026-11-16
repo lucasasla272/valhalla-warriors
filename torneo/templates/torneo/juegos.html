@@ -1,14 +1,18 @@
 {% extends "torneo/base.html" %}
 {% block title %}Juegos del torneo | Valhalla Warriors{% endblock %}
 {% block content %}
-    <h1>⚔️ Juegos del torneo</h1>
+{% load static %}
+    <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Juegos del torneo</h1>
     <div class="grid">
         {% for juego in juegos %}
-            <div class="card">
+                        <div class="card">
+                {% if juego.imagen %}
+                    <img src="{{ juego.imagen.url }}" alt="{{ juego.nombre }}"
+                         style="width:100%; border-radius:8px; margin-bottom:10px;">
+                {% endif %}
                 <h3>{{ juego.nombre }}</h3>
                 <p>{{ juego.genero }}</p>
-                {% if user.jugador %} 
-                {% if user.is_authenticated %}
+                {% if user.jugador %}
                     {% if juego.id in mis_ids %}
                         <form method="post" action="{% url 'torneo:desinscribir' juego.id %}">
                             {% csrf_token %}
@@ -20,7 +24,6 @@
                             <button type="submit">Inscribirme</button>
                         </form>
                     {% endif %}
-                {% endif %}
                 {% endif %}
             </div>
         {% empty %}

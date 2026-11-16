@@ -130,3 +130,5 @@ MAILERS = {
 LOGIN_URL = 'torneo:login'
 LOGIN_REDIRECT_URL = 'torneo:home'
 LOGOUT_REDIRECT_URL = 'torneo:home'
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"

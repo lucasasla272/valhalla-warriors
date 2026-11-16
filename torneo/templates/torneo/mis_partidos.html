@@ -1,30 +1,31 @@
 {% extends "torneo/base.html" %}
 {% block title %}Mis batallas | Valhalla Warriors{% endblock %}
 {% block content %}
-    <h1>⚔️ Batallas de {{ jugador.user.username|capfirst }}</h1>
+{% load static %}
+    <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Batallas de {{ jugador.user.username|capfirst }}</h1>
 
     {% if historial %}
-        <table style="width:100%; border-collapse:collapse; margin-top:16px;">
-            <tr style="color: var(--oro);">
-                <th style="text-align:left; padding:8px;">Fecha</th>
-                <th style="text-align:left; padding:8px;">Juego</th>
-                <th style="text-align:left; padding:8px;">Rival</th>
-                <th style="padding:8px;">Marcador</th>
-                <th style="padding:8px;">Resultado</th>
+        <table class="tabla">
+            <tr>
+                <th>Fecha</th>
+                <th>Juego</th>
+                <th>Rival</th>
+                <th class="c">Marcador</th>
+                <th class="c">Resultado</th>
             </tr>
             {% for h in historial %}
-                <tr style="border-top:1px solid #3a3226;">
-                    <td style="padding:8px;">{{ h.fecha|date:"d/m/Y H:i" }}</td>
-                    <td style="padding:8px;">{{ h.juego }}</td>
-                    <td style="padding:8px;">{{ h.rival.user.username }}</td>
-                    <td style="padding:8px; text-align:center;">{{ h.gf }} - {{ h.gc }}</td>
-                    <td style="padding:8px; text-align:center;">
+                <tr>
+                    <td>{{ h.fecha|date:"d/m/Y H:i" }}</td>
+                    <td>{{ h.juego }}</td>
+                    <td>{{ h.rival.user.username }}</td>
+                    <td class="c">{{ h.gf }} - {{ h.gc }}</td>
+                    <td class="c">
                         {% if h.gf > h.gc %}
-                            <span style="color:#9fd47a; font-weight:bold;">Victoria</span>
+                            <span class="res-v">Victoria</span>
                         {% elif h.gf == h.gc %}
-                            <span style="color:#c9c9c9;">Empate</span>
+                            <span class="res-e">Empate</span>
                         {% else %}
-                            <span style="color:#e07a7a; font-weight:bold;">Derrota</span>
+                            <span class="res-d">Derrota</span>
                         {% endif %}
                     </td>
                 </tr>
