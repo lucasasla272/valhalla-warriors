@@ -1,0 +1,29 @@
+{% extends "torneo/base.html" %}
+{% block title %}Tabla de posiciones | Valhalla Warriors{% endblock %}
+{% block content %}
+    <h1>🏆 Tabla de posiciones</h1>
+    <table style="width:100%; border-collapse:collapse; margin-top:16px;">
+        <tr style="color: var(--oro);">
+            <th style="text-align:left; padding:8px;">#</th>
+            <th style="text-align:left; padding:8px;">Guerrero</th>
+            <th style="padding:8px;">PJ</th>
+            <th style="padding:8px;">PG</th>
+            <th style="padding:8px;">PE</th>
+            <th style="padding:8px;">PP</th>
+            <th style="padding:8px;">PTS</th>
+        </tr>
+        {% for f in tabla %}
+            <tr style="border-top:1px solid #3a3226;">
+                <td style="padding:8px;">{{ forloop.counter }}</td>
+                <td style="padding:8px;">{{ f.jugador.user.username }}</td>
+                <td style="padding:8px; text-align:center;">{{ f.pj }}</td>
+                <td style="padding:8px; text-align:center;">{{ f.pg }}</td>
+                <td style="padding:8px; text-align:center;">{{ f.pe }}</td>
+                <td style="padding:8px; text-align:center;">{{ f.pp }}</td>
+                <td style="padding:8px; text-align:center; color: var(--oro); font-weight:bold;">{{ f.pts }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7" style="padding:8px;">Todavía no se jugaron partidos.</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

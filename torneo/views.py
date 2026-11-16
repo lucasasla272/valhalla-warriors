@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
+from .models import Partido
+from django.db.models import Q
 
 from .forms import RegistroForm
 from .models import Inscripcion, Juego, Jugador
@@ -52,3 +54,47 @@ def desinscribir(request, juego_id):
     Inscripcion.objects.filter(jugador=request.user.jugador, juego=juego).delete()
     messages.success(request, f"Te desinscribiste de {juego.nombre}.")
     return redirect("torneo:juegos")
+
+def tabla_posiciones(request):
+    partidos = Partido.objects.select_related("jugador1__user", "jugador2__user")
+    filas = {}
+    for p in partidos:
+        # Recorremos el partido desde las DOS perspectivas:
+        # (jugador, puntos a favor, puntos en contra)
+        for jugador, gf, gc in ((p.jugador1, p.puntos1, p.puntos2),
+                                (p.jugador2, p.puntos2, p.puntos1)):
+            f = filas.setdefault(jugador, {"jugador": jugador, "pj": 0, "pg": 0,
+                                           "pe": 0, "pp": 0, "pts": 0})
+            f["pj"] += 1
+            if gf > gc:
+                f["pg"] += 1
+                f["pts"] += 3       # victoria = 3 pts
+            elif gf == gc:
+                f["pe"] += 1
+                f["pts"] += 1       # empate = 1 pt
+            else:
+                f["pp"] += 1        # derrota = 0
+    tabla = sorted(filas.values(), key=lambda f: (-f["pts"], -f["pg"]))
+    return render(request, "torneo/tabla.html", {"tabla": tabla})
+
+@login_required
+def mis_partidos(request):
+    jugador = request.user.jugador
+    partidos = Partido.objects.filter(
+        Q(jugador1=jugador) | Q(jugador2=jugador)
+    ).select_related("juego", "jugador1__user", "jugador2__user").order_by("-fecha")
+
+    historial = []
+    for p in partidos:
+        # Mismo truco de la tabla: mirar el partido desde MI perspectiva
+        soy1 = (p.jugador1 == jugador)
+        historial.append({
+            "juego": p.juego,
+            "rival": p.jugador2 if soy1 else p.jugador1,
+            "gf": p.puntos1 if soy1 else p.puntos2,
+            "gc": p.puntos2 if soy1 else p.puntos1,
+            "fecha": p.fecha,
+        })
+
+    return render(request, "torneo/mis_partidos.html",
+                  {"historial": historial, "jugador": jugador})

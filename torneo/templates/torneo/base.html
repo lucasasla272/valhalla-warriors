@@ -40,8 +40,10 @@
         <div>
             <a href="{% url 'torneo:home' %}">Inicio</a>
             <a href="{% url 'torneo:juegos' %}">Juegos</a>
+            <a href="{% url 'torneo:tabla' %}">Tabla</a>
             {% if user.is_authenticated %}
                 <span class="hola">Hola, {{ user.username|capfirst }}</span>
+                <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
                 <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit">Salir</button>

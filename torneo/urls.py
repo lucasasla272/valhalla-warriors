@@ -12,4 +12,6 @@ urlpatterns = [
     path("juegos/", views.lista_juegos, name="juegos"),
     path("juegos/<int:juego_id>/inscribir/", views.inscribir, name="inscribir"),
     path("juegos/<int:juego_id>/desinscribir/", views.desinscribir, name="desinscribir"),
+    path("tabla/", views.tabla_posiciones, name="tabla"),
+    path("mis-partidos/", views.mis_partidos, name="mis_partidos"),
 ]
