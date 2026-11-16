@@ -41,6 +41,7 @@
             <a href="{% url 'torneo:home' %}">Inicio</a>
             <a href="{% url 'torneo:juegos' %}">Juegos</a>
             <a href="{% url 'torneo:tabla' %}">Tabla</a>
+            <a href="{% url 'torneo:estadisticas' %}">Estadísticas</a>
             {% if user.is_authenticated %}
                 <span class="hola">Hola, {{ user.username|capfirst }}</span>
                 <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>

@@ -1,0 +1,56 @@
+{% extends "torneo/base.html" %}
+{% block title %}Estadísticas | Valhalla Warriors{% endblock %}
+{% block content %}
+    <h1>📊 Estadísticas del torneo</h1>
+
+    <h2 style="margin-top:20px;">Puntos por guerrero</h2>
+    <canvas id="grafico-puntos" style="max-width:700px;"></canvas>
+
+    <h2 style="margin-top:30px;">Gladiadores por nivel</h2>
+    <canvas id="grafico-niveles" style="max-width:420px;"></canvas>
+
+    <h2 style="margin-top:30px;">Batallas por juego</h2>
+    <canvas id="grafico-juegos" style="max-width:700px;"></canvas>
+
+    {{ nombres|json_script:"nombres-data" }}
+    {{ puntos|json_script:"puntos-data" }}
+    {{ niveles_labels|json_script:"niveles-labels" }}
+    {{ niveles_valores|json_script:"niveles-valores" }}
+    {{ juegos_labels|json_script:"juegos-labels" }}
+    {{ juegos_valores|json_script:"juegos-valores" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const nombres = JSON.parse(document.getElementById("nombres-data").textContent);
+        const puntos  = JSON.parse(document.getElementById("puntos-data").textContent);
+        new Chart(document.getElementById("grafico-puntos"), {
+            type: "bar",
+            data: {
+                labels: nombres,
+                datasets: [{ label: "Puntos", data: puntos, backgroundColor: "#d4af37" }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        const nivelesLabels = JSON.parse(document.getElementById("niveles-labels").textContent);
+        const nivelesValores = JSON.parse(document.getElementById("niveles-valores").textContent);
+        new Chart(document.getElementById("grafico-niveles"), {
+            type: "doughnut",
+            data: {
+                labels: nivelesLabels,
+                datasets: [{ data: nivelesValores, backgroundColor: ["#8a8a8a", "#d4af37", "#b5452e"] }]
+            }
+        });
+
+        const juegosLabels = JSON.parse(document.getElementById("juegos-labels").textContent);
+        const juegosValores = JSON.parse(document.getElementById("juegos-valores").textContent);
+        new Chart(document.getElementById("grafico-juegos"), {
+            type: "bar",
+            data: {
+                labels: juegosLabels,
+                datasets: [{ label: "Batallas", data: juegosValores, backgroundColor: "#d4af37" }]
+            },
+            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    </script>
+{% endblock %}

@@ -14,4 +14,5 @@ urlpatterns = [
     path("juegos/<int:juego_id>/desinscribir/", views.desinscribir, name="desinscribir"),
     path("tabla/", views.tabla_posiciones, name="tabla"),
     path("mis-partidos/", views.mis_partidos, name="mis_partidos"),
+    path("estadisticas/", views.estadisticas, name="estadisticas"),
 ]

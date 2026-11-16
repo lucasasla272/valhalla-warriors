@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Partido
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from .forms import RegistroForm
 from .models import Inscripcion, Juego, Jugador
@@ -98,3 +98,36 @@ def mis_partidos(request):
 
     return render(request, "torneo/mis_partidos.html",
                   {"historial": historial, "jugador": jugador})
+
+def estadisticas(request):
+    # 1) Puntos por jugador (misma lógica de la tabla)
+    partidos = Partido.objects.select_related("jugador1__user", "jugador2__user")
+    filas = {}
+    for p in partidos:
+        for jugador, gf, gc in ((p.jugador1, p.puntos1, p.puntos2),
+                                (p.jugador2, p.puntos2, p.puntos1)):
+            f = filas.setdefault(jugador, {"nombre": jugador.user.username, "pts": 0, "pg": 0})
+            if gf > gc:
+                f["pts"] += 3
+                f["pg"] += 1
+            elif gf == gc:
+                f["pts"] += 1
+    orden = sorted(filas.values(), key=lambda f: (-f["pts"], -f["pg"]))
+    nombres = [f["nombre"] for f in orden]
+    puntos = [f["pts"] for f in orden]
+
+    # 2) Jugadores por nivel (una sola consulta con agregación)
+    niveles_qs = Jugador.objects.values("nivel").annotate(total=Count("id"))
+    niveles_labels = [dict(Jugador.Nivel.choices)[r["nivel"]] for r in niveles_qs]
+    niveles_valores = [r["total"] for r in niveles_qs]
+
+    # 3) Partidos por juego (misma idea, sobre Partido)
+    juegos_qs = Partido.objects.values("juego__nombre").annotate(total=Count("id"))
+    juegos_labels = [r["juego__nombre"] for r in juegos_qs]
+    juegos_valores = [r["total"] for r in juegos_qs]
+
+    return render(request, "torneo/estadisticas.html", {
+        "nombres": nombres, "puntos": puntos,
+        "niveles_labels": niveles_labels, "niveles_valores": niveles_valores,
+        "juegos_labels": juegos_labels, "juegos_valores": juegos_valores,
+    })
