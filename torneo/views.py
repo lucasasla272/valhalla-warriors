@@ -27,18 +27,20 @@ def registro(request):
 
 def lista_juegos(request):
     juegos = Juego.objects.all()
+    jugador = getattr(request.user, "jugador", None) if request.user.is_authenticated else None
     mis_ids = []
-    if request.user.is_authenticated:
+    if jugador:
         mis_ids = list(
-            Inscripcion.objects.filter(jugador=request.user.jugador)
-            .values_list("juego_id", flat=True)
+            Inscripcion.objects.filter(jugador=jugador).values_list("juego_id", flat=True)
         )
     return render(request, "torneo/juegos.html",
-                  {"juegos": juegos, "mis_ids": mis_ids})
-
+                  {"juegos": juegos, "mis_ids": mis_ids, "mi_jugador": jugador})
 
 @login_required
 def inscribir(request, juego_id):
+    if getattr(request.user, "jugador", None) is None:
+        messages.error(request, "Tu cuenta no tiene perfil de jugador.")
+        return redirect("torneo:juegos")
     juego = get_object_or_404(Juego, pk=juego_id)
     try:
         Inscripcion.objects.create(jugador=request.user.jugador, juego=juego)
@@ -50,6 +52,9 @@ def inscribir(request, juego_id):
 
 @login_required
 def desinscribir(request, juego_id):
+    if getattr(request.user, "jugador", None) is None:
+        messages.error(request, "Tu cuenta no tiene perfil de jugador.")
+        return redirect("torneo:juegos")
     juego = get_object_or_404(Juego, pk=juego_id)
     Inscripcion.objects.filter(jugador=request.user.jugador, juego=juego).delete()
     messages.success(request, f"Te desinscribiste de {juego.nombre}.")
@@ -79,12 +84,15 @@ def tabla_posiciones(request):
 
 @login_required
 def mis_partidos(request):
-    jugador = request.user.jugador
+    jugador = getattr(request.user, "jugador", None)
+    if jugador is None:
+        messages.error(request, "Tu cuenta no tiene perfil de jugador (es de administrador).")
+        return redirect("torneo:home")
+
+    historial = []
     partidos = Partido.objects.filter(
         Q(jugador1=jugador) | Q(jugador2=jugador)
     ).select_related("juego", "jugador1__user", "jugador2__user").order_by("-fecha")
-
-    historial = []
     for p in partidos:
         # Mismo truco de la tabla: mirar el partido desde MI perspectiva
         soy1 = (p.jugador1 == jugador)

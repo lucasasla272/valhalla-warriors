@@ -2,18 +2,12 @@
 {% block title %}Juegos del torneo | Valhalla Warriors{% endblock %}
 {% block content %}
     <h1>⚔️ Juegos del torneo</h1>
-
-    {% if messages %}
-        {% for m in messages %}
-            <p class="msg-{{ m.tags }}">{{ m }}</p> 
-        {% endfor %}
-    {% endif %}
-
     <div class="grid">
         {% for juego in juegos %}
             <div class="card">
                 <h3>{{ juego.nombre }}</h3>
                 <p>{{ juego.genero }}</p>
+                {% if user.jugador %} 
                 {% if user.is_authenticated %}
                     {% if juego.id in mis_ids %}
                         <form method="post" action="{% url 'torneo:desinscribir' juego.id %}">
@@ -26,6 +20,7 @@
                             <button type="submit">Inscribirme</button>
                         </form>
                     {% endif %}
+                {% endif %}
                 {% endif %}
             </div>
         {% empty %}

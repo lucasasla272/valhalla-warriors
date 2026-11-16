@@ -43,20 +43,27 @@
             <a href="{% url 'torneo:tabla' %}">Tabla</a>
             <a href="{% url 'torneo:estadisticas' %}">Estadísticas</a>
             {% if user.is_authenticated %}
-                <span class="hola">Hola, {{ user.username|capfirst }}</span>
-                <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
-                <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
+            <span class="hola">Hola, {{ user.username|capfirst }}</span>
+            {% if user.jugador %}
+            <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
+            {% endif %}
+            <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit">Salir</button>
-                </form>
-            {% else %}
-                <a href="{% url 'torneo:login' %}">Entrar</a>
-                <a href="{% url 'torneo:registro' %}">Unirse al torneo</a>
-            {% endif %}
+            </form>
+        {% else %}
+            <a href="{% url 'torneo:login' %}">Entrar</a>
+            <a href="{% url 'torneo:registro' %}">Unirse al torneo</a>
+        {% endif %}
         </div>
     </nav>
 
     <main>
+        {% if messages %}
+            {% for m in messages %}
+                <p class="msg-{{ m.tags }}">{{ m }}</p>
+            {% endfor %}
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
