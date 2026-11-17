@@ -1,0 +1,43 @@
+{% extends "torneo/base.html" %}
+{% load static %}
+{% block title %}Reglas del torneo | Valhalla Warriors{% endblock %}
+{% block content %}
+    <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Reglas del torneo</h1>
+
+    <div class="grid" style="margin-top:24px;">
+        <div class="card">
+            <h3>⚔️ Formato</h3>
+            <p>Liga por puntos: los guerreros se inscriben a los juegos que elijan y registran sus batallas.
+               No hay eliminación — cada quien forja su propio camino hacia el podio.</p>
+        </div>
+        <div class="card">
+            <h3>🏆 Puntuación</h3>
+            <p>Victoria = <strong>3 puntos</strong> · Empate = <strong>1 punto</strong> · Derrota = 0.
+               La tabla de posiciones se calcula automáticamente con cada batalla registrada.</p>
+        </div>
+        <div class="card">
+            <h3>🪓 Desempates</h3>
+            <p>Si dos guerreros igualan puntos, se decide en este orden:
+               1) más batallas ganadas (PG) · 2) más puntos a favor (GF) · 3) menos puntos en contra (GC).</p>
+        </div>
+        <div class="card">
+            <h3>🛡️ Niveles</h3>
+            <p>Cada guerrero se declara al registrarse: Amateur, Normal o Experto.
+               El nivel es informativo — en el Valhalla todos pelean contra todos.</p>
+        </div>
+        <div class="card">
+            <h3>📝 Inscripción</h3>
+            <p>Podés inscribirte a cuantos juegos quieras y cambiar de opinión antes de pelear.
+               Nadie compite en un juego que no eligió.</p>
+        </div>
+        <div class="card">
+            <h3>⚖️ Nota sobre los juegos</h3>
+            <p>Cada videojuego puntúa distinto (rondas, goles, partidas). El sistema usa una regla general
+               con empates posibles; algunos juegos reales los resuelven en overtime.</p>
+        </div>
+    </div>
+
+    <p style="margin-top:28px; text-align:center;">
+        <a class="btn-cta" href="{% url 'torneo:registro' %}">Quiero pelear</a>
+    </p>
+{% endblock %}

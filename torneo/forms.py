@@ -21,6 +21,13 @@ class RegistroForm(UserCreationForm):
 class LoginFormulario(AuthenticationForm):
     username = forms.CharField(label="Nombre de guerrero")
     password = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
+    error_messages = {
+        "invalid_login": (
+            "Ingresá un nombre de guerrero y una contraseña correctos. "
+            "Ojo: ambos campos distinguen mayúsculas y minúsculas."
+        ),
+        "inactive": "Esta cuenta está inactiva.",
+    }
 
 class UsuarioForm(forms.ModelForm):
     class Meta:

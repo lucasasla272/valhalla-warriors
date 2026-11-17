@@ -3,11 +3,27 @@
 {% block content %}
 {% load static %}
     <h1><img class="icono-titulo" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">Tabla de posiciones</h1>
+    <form method="get" style="margin:14px 0 6px; display:flex; gap:10px; align-items:center;">
+        <select name="juego">
+            <option value="">Todos los juegos</option>
+            {% for j in juegos %}
+                <option value="{{ j.id }}" {% if juego_sel and j.id == juego_sel.id %}selected{% endif %}>{{ j.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+        {% if juego_sel %}
+            <a href="{% url 'torneo:tabla' %}" style="margin-left:10px;">✖ Quitar filtro</a>
+        {% endif %}
+    </form>
+
+    {% if juego_sel %}
+        <h2 style="color: var(--oro); margin-top:6px;">Ranking de {{ juego_sel.nombre }}</h2>
+    {% endif %}
     <table class="tabla">
         <tr>
             <th>#</th>
+            <th class="c">Avatar</th>
             <th>Guerrero</th>
-            <th>Avatar</th>
             <th class="c">PJ</th>
             <th class="c">PG</th>
             <th class="c">PE</th>
@@ -19,12 +35,14 @@
         {% for f in tabla %}
             <tr>
                 <td class="p{{ forloop.counter }}">{{ forloop.counter }}</td>
-                <td>{{ f.jugador.user.username }}</td>
-                <td>
+                <td class="c">
                     {% if f.jugador.avatar %}
                         <img class="avatar" src="{{ f.jugador.avatar.url }}" alt="">
+                    {% else %}
+                        <img class="avatar" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">
                     {% endif %}
                 </td>
+                <td><a href="{% url 'torneo:perfil_guerrero' f.jugador.id %}">{{ f.jugador.user.username }}</a></td>
                 <td class="c">{{ f.pj }}</td>
                 <td class="c">{{ f.pg }}</td>
                 <td class="c">{{ f.pe }}</td>

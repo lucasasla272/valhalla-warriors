@@ -61,7 +61,17 @@ def desinscribir(request, juego_id):
     return redirect("torneo:juegos")
 
 def tabla_posiciones(request):
+    juegos = Juego.objects.all()
+
+    # Filtro opcional por juego (viene por GET: /tabla/?juego=3)
+    juego_id = request.GET.get("juego", "").strip()
     partidos = Partido.objects.select_related("jugador1__user", "jugador2__user")
+    juego_sel = None
+    if juego_id.isdigit():
+        juego_sel = Juego.objects.filter(pk=juego_id).first()
+        if juego_sel:
+            partidos = partidos.filter(juego=juego_sel)
+
     filas = {}
     for p in partidos:
         for jugador, gf, gc in ((p.jugador1, p.puntos1, p.puntos2),
@@ -79,9 +89,10 @@ def tabla_posiciones(request):
                 f["pts"] += 1
             else:
                 f["pp"] += 1
-    # Desempate: puntos > partidos ganados > puntos a favor > puntos en contra
     tabla = sorted(filas.values(), key=lambda f: (-f["pts"], -f["pg"], -f["gf"], f["gc"]))
-    return render(request, "torneo/tabla.html", {"tabla": tabla})
+
+    return render(request, "torneo/tabla.html",
+                  {"tabla": tabla, "juegos": juegos, "juego_sel": juego_sel})
 
 @login_required
 def mis_partidos(request):
@@ -90,11 +101,21 @@ def mis_partidos(request):
         messages.error(request, "Tu cuenta no tiene perfil de jugador (es de administrador).")
         return redirect("torneo:home")
 
-    historial = []
     partidos = Partido.objects.filter(
         Q(jugador1=jugador) | Q(jugador2=jugador)
-    ).select_related("juego", "jugador1__user", "jugador2__user").order_by("-fecha")
-    for p in partidos:
+    ).select_related("juego", "jugador1__user", "jugador2__user")
+
+    # Filtro opcional por juego (mismo patrón que la tabla de posiciones)
+    juegos = Juego.objects.filter(id__in=partidos.values("juego_id").distinct())
+    juego_id = request.GET.get("juego", "").strip()
+    juego_sel = None
+    if juego_id.isdigit():
+        juego_sel = juegos.filter(pk=juego_id).first()
+        if juego_sel:
+            partidos = partidos.filter(juego=juego_sel)
+
+    historial = []
+    for p in partidos.order_by("-fecha"):
         # Mismo truco de la tabla: mirar el partido desde MI perspectiva
         soy1 = (p.jugador1 == jugador)
         historial.append({
@@ -106,7 +127,8 @@ def mis_partidos(request):
         })
 
     return render(request, "torneo/mis_partidos.html",
-                  {"historial": historial, "jugador": jugador})
+                  {"historial": historial, "jugador": jugador,
+                   "juegos": juegos, "juego_sel": juego_sel})
 
 def estadisticas(request):
     # 1) Puntos por jugador (misma lógica de la tabla)
@@ -162,3 +184,43 @@ def editar_perfil(request):
 
     return render(request, "torneo/editar_perfil.html",
                   {"form_u": form_u, "form_p": form_p, "jugador": jugador})
+
+def reglas(request):
+    return render(request, "torneo/reglas.html")
+
+def perfil_guerrero(request, jugador_id):
+    jugador = get_object_or_404(Jugador.objects.select_related("user"), pk=jugador_id)
+
+    # Juegos en los que está inscripto
+    inscripciones = Inscripcion.objects.filter(jugador=jugador).select_related("juego")
+
+    # Historial desde SU perspectiva (mismo truco que mis_partidos)
+    historial = []
+    stats = {"pj": 0, "pg": 0, "pe": 0, "pp": 0, "pts": 0}
+    partidos = Partido.objects.filter(
+        Q(jugador1=jugador) | Q(jugador2=jugador)
+    ).select_related("juego", "jugador1__user", "jugador2__user").order_by("-fecha")
+    for p in partidos:
+        soy1 = (p.jugador1 == jugador)
+        gf = p.puntos1 if soy1 else p.puntos2
+        gc = p.puntos2 if soy1 else p.puntos1
+        historial.append({
+            "juego": p.juego,
+            "rival": p.jugador2 if soy1 else p.jugador1,
+            "gf": gf,
+            "gc": gc,
+            "fecha": p.fecha,
+        })
+        stats["pj"] += 1
+        if gf > gc:
+            stats["pg"] += 1
+            stats["pts"] += 3
+        elif gf == gc:
+            stats["pe"] += 1
+            stats["pts"] += 1
+        else:
+            stats["pp"] += 1
+
+    return render(request, "torneo/guerrero.html",
+                  {"jugador": jugador, "inscripciones": inscripciones,
+                   "historial": historial, "stats": stats})

@@ -9,7 +9,6 @@ app_name = "torneo"
 urlpatterns = [
     path("", views.home, name="home"),
     path("registro/", views.registro, name="registro"),
-    path("login/", auth_views.LoginView.as_view(template_name="torneo/login.html"), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("juegos/", views.lista_juegos, name="juegos"),
     path("juegos/<int:juego_id>/inscribir/", views.inscribir, name="inscribir"),
@@ -22,4 +21,6 @@ urlpatterns = [
     path("perfil/password/", auth_views.PasswordChangeView.as_view(template_name="torneo/cambiar_password.html",form_class=CambioPasswordForm,
                                                                    success_url=reverse_lazy("torneo:password_done"),), name="cambiar_password"),
     path("perfil/password/listo/", auth_views.PasswordChangeDoneView.as_view(template_name="torneo/password_listo.html",), name="password_done"),
+    path("reglas/", views.reglas, name="reglas"),
+    path("guerreros/<int:jugador_id>/", views.perfil_guerrero, name="perfil_guerrero"),
 ]

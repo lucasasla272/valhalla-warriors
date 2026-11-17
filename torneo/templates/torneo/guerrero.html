@@ -1,0 +1,63 @@
+{% extends "torneo/base.html" %}
+{% block title %}{{ jugador.user.username }} | Valhalla Warriors{% endblock %}
+{% block content %}
+{% load static %}
+    <section class="perfil-hero">
+        {% if jugador.avatar %}
+            <img class="perfil-avatar" src="{{ jugador.avatar.url }}" alt="Avatar de {{ jugador.user.username }}">
+        {% else %}
+            <img class="perfil-avatar" src="{% static 'torneo/img/valhalla-logo.png' %}" alt="">
+        {% endif %}
+        <div>
+            <h1>{{ jugador.user.username }}</h1>
+            <span class="nivel-badge">{{ jugador.get_nivel_display }}</span>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card"><span class="stat-num">{{ stats.pj }}</span><span class="stat-label">Jugados</span></div>
+        <div class="stat-card"><span class="stat-num">{{ stats.pg }}</span><span class="stat-label">Ganados</span></div>
+        <div class="stat-card"><span class="stat-num">{{ stats.pe }}</span><span class="stat-label">Empatados</span></div>
+        <div class="stat-card"><span class="stat-num">{{ stats.pp }}</span><span class="stat-label">Perdidos</span></div>
+        <div class="stat-card"><span class="stat-num oro">{{ stats.pts }}</span><span class="stat-label">Puntos</span></div>
+    </section>
+
+    <h2>Juegos</h2>
+    <div class="chips">
+        {% for i in inscripciones %}
+            <span class="chip">{{ i.juego.nombre }}</span>
+        {% empty %}
+            <p>No está inscripto en ningún juego todavía.</p>
+        {% endfor %}
+    </div>
+
+    <h2>Historial de batallas</h2>
+    <table class="tabla">
+        <tr>
+            <th>Fecha</th>
+            <th>Juego</th>
+            <th>Rival</th>
+            <th class="c">Resultado</th>
+            <th class="c">Marcador</th>
+        </tr>
+        {% for h in historial %}
+            <tr>
+                <td>{{ h.fecha|date:"d/m/Y" }}</td>
+                <td>{{ h.juego.nombre }}</td>
+                <td><a href="{% url 'torneo:perfil_guerrero' h.rival.id %}">{{ h.rival.user.username }}</a></td>
+                <td class="c">
+                    {% if h.gf > h.gc %}
+                        <span class="res-v">Victoria</span>
+                    {% elif h.gf == h.gc %}
+                        <span class="res-e">Empate</span>
+                    {% else %}
+                        <span class="res-d">Derrota</span>
+                    {% endif %}
+                </td>
+                <td class="c oro">{{ h.gf }} - {{ h.gc }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5">Todavía no jugó ninguna batalla.</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -92,6 +92,83 @@
         .icono-titulo { height: 30px; vertical-align: -6px; margin-right: 10px; }
         .avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
                   vertical-align: -9px; margin-right: 8px; border: 1px solid var(--oro); }
+                  select, input[type="text"], input[type="password"], input[type="email"],
+        input[type="number"], input[type="file"] {
+            background: var(--panel);
+            color: var(--texto);
+            border: 1px solid #3a3226;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--oro);
+        }
+        .perfil-hero {
+         display: flex;
+        align-items: center;
+        gap: 22px;
+        margin: 26px 0;
+        }
+        .perfil-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--oro);
+        box-shadow: 0 0 18px rgba(212, 175, 55, .35);
+        }
+        .perfil-hero h1 { margin: 0 0 6px; }
+
+        .nivel-badge {
+        display: inline-block;
+        padding: 4px 14px;
+        border: 1px solid var(--oro);
+        border-radius: 999px;
+        color: var(--oro);
+        font-size: .9rem;
+        letter-spacing: .5px;
+        }
+
+        .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 12px;
+        margin: 18px 0 30px;
+        }
+        .stat-card {
+        background: rgba(212, 175, 55, .07);
+        border: 1px solid rgba(212, 175, 55, .35);
+        border-radius: 10px;
+        padding: 14px 10px;
+        text-align: center;
+        }
+        .stat-num { display: block; font-size: 1.7rem; font-weight: 700; }
+        .stat-label { font-size: .85rem; opacity: .8; }
+
+        .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+        .chip {
+        padding: 6px 16px;
+        border-radius: 999px;
+        background: rgba(212, 175, 55, .12);
+        border: 1px solid var(--oro);
+        color: var(--oro);
+        }
+
+        .res-v { color: #7bc47f; font-weight: 700; }
+        .res-e { color: var(--oro); font-weight: 700; }
+        .res-d { color: #d16a6a; font-weight: 700; }
+        .tabla a:hover { color: #f5d76e; text-decoration: underline; }
+        .celda-rival { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .celda-rival .avatar {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+        }
+        .celda-rival a { display: inline-block; width: 90px; text-align: left; }
+        .tabla .avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -131,6 +208,6 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer>Proyecto final - Valhalla Warriors · ᚠᚢᚦ ᚨᚱᛖ ᚷᛟᛞ ·</footer>
+     <footer><a href="{% url 'torneo:reglas' %}">Reglas del torneo</a> · Proyecto final - Valhalla Warriors · ᚠᚢᚦ ᚨᚱᛖ ᚷᛟᛞ</footer>
 </body>
 </html>
