@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import Jugador
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class RegistroForm(UserCreationForm):
@@ -19,3 +21,23 @@ class RegistroForm(UserCreationForm):
 class LoginFormulario(AuthenticationForm):
     username = forms.CharField(label="Nombre de guerrero")
     password = forms.CharField(label="Contraseña", widget=forms.PasswordInput)
+
+class UsuarioForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email"]
+        labels = {"username": "Nombre de guerrero", "email": "Correo electrónico"}
+
+
+class PerfilForm(forms.ModelForm):
+    class Meta:
+        model = Jugador
+        fields = ["avatar", "nivel"]
+        labels = {"avatar": "Avatar", "nivel": "Nivel"}
+
+
+class CambioPasswordForm(PasswordChangeForm):
+    old_password = forms.CharField(label="Contraseña actual", strip=False, widget=forms.PasswordInput)
+    new_password1 = forms.CharField(label="Contraseña nueva", strip=False, widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label="Confirmar contraseña nueva", strip=False, widget=forms.PasswordInput)
+        

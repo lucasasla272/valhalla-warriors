@@ -22,6 +22,7 @@ class Jugador(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="jugador")
     nivel = models.CharField(max_length=10, choices=Nivel.choices, default=Nivel.NORMAL)
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
 
     def __str__(self):
         return self.user.username

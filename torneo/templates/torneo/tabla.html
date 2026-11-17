@@ -7,24 +7,34 @@
         <tr>
             <th>#</th>
             <th>Guerrero</th>
+            <th>Avatar</th>
             <th class="c">PJ</th>
             <th class="c">PG</th>
             <th class="c">PE</th>
             <th class="c">PP</th>
+            <th class="c">GF</th>
+            <th class="c">GC</th>
             <th class="c">PTS</th>
         </tr>
         {% for f in tabla %}
             <tr>
                 <td class="p{{ forloop.counter }}">{{ forloop.counter }}</td>
                 <td>{{ f.jugador.user.username }}</td>
+                <td>
+                    {% if f.jugador.avatar %}
+                        <img class="avatar" src="{{ f.jugador.avatar.url }}" alt="">
+                    {% endif %}
+                </td>
                 <td class="c">{{ f.pj }}</td>
                 <td class="c">{{ f.pg }}</td>
                 <td class="c">{{ f.pe }}</td>
                 <td class="c">{{ f.pp }}</td>
+                <td class="c">{{ f.gf }}</td>
+                <td class="c">{{ f.gc }}</td>
                 <td class="c oro">{{ f.pts }}</td>
             </tr>
         {% empty %}
-            <tr><td colspan="7">Todavía no se jugaron partidos.</td></tr>
+            <tr><td colspan="10">Todavía no se jugaron partidos.</td></tr>
         {% endfor %}
     </table>
 {% endblock %}

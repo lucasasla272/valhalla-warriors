@@ -90,6 +90,8 @@
         .hero { animation: aparecer .6s ease both; }
         .imagen-home { animation: aparecer .8s .15s ease both; }
         .icono-titulo { height: 30px; vertical-align: -6px; margin-right: 10px; }
+        .avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+                  vertical-align: -9px; margin-right: 8px; border: 1px solid var(--oro); }
     </style>
 </head>
 <body>
@@ -108,6 +110,7 @@
                 {% if user.jugador %}
                     <a href="{% url 'torneo:mis_partidos' %}">Mis partidos</a>
                 {% endif %}
+                <a href="{% url 'torneo:editar_perfil' %}">Mi perfil</a>
                 <form method="post" action="{% url 'torneo:logout' %}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit">Salir</button>

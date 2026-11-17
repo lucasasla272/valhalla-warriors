@@ -10,6 +10,7 @@
                 <th>Fecha</th>
                 <th>Juego</th>
                 <th>Rival</th>
+                <th>Avatar</th>
                 <th class="c">Marcador</th>
                 <th class="c">Resultado</th>
             </tr>
@@ -17,7 +18,12 @@
                 <tr>
                     <td>{{ h.fecha|date:"d/m/Y H:i" }}</td>
                     <td>{{ h.juego }}</td>
-                    <td>{{ h.rival.user.username }}</td>
+                    <td>
+                        {% if h.rival.avatar %}
+                            <img class="avatar" src="{{ h.rival.avatar.url }}" alt="">
+                        {% endif %}
+                        {{ h.rival.user.username }}
+                    </td>
                     <td class="c">{{ h.gf }} - {{ h.gc }}</td>
                     <td class="c">
                         {% if h.gf > h.gc %}

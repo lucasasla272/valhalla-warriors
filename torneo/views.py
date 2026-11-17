@@ -4,8 +4,7 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Partido
 from django.db.models import Q, Count
-
-from .forms import RegistroForm
+from .forms import RegistroForm, UsuarioForm, PerfilForm
 from .models import Inscripcion, Juego, Jugador
 
 
@@ -65,22 +64,23 @@ def tabla_posiciones(request):
     partidos = Partido.objects.select_related("jugador1__user", "jugador2__user")
     filas = {}
     for p in partidos:
-        # Recorremos el partido desde las DOS perspectivas:
-        # (jugador, puntos a favor, puntos en contra)
         for jugador, gf, gc in ((p.jugador1, p.puntos1, p.puntos2),
                                 (p.jugador2, p.puntos2, p.puntos1)):
             f = filas.setdefault(jugador, {"jugador": jugador, "pj": 0, "pg": 0,
-                                           "pe": 0, "pp": 0, "pts": 0})
+                                         "pe": 0, "pp": 0, "pts": 0, "gf": 0, "gc": 0})
             f["pj"] += 1
+            f["gf"] += gf
+            f["gc"] += gc
             if gf > gc:
                 f["pg"] += 1
-                f["pts"] += 3       # victoria = 3 pts
+                f["pts"] += 3
             elif gf == gc:
                 f["pe"] += 1
-                f["pts"] += 1       # empate = 1 pt
+                f["pts"] += 1
             else:
-                f["pp"] += 1        # derrota = 0
-    tabla = sorted(filas.values(), key=lambda f: (-f["pts"], -f["pg"]))
+                f["pp"] += 1
+    # Desempate: puntos > partidos ganados > puntos a favor > puntos en contra
+    tabla = sorted(filas.values(), key=lambda f: (-f["pts"], -f["pg"], -f["gf"], f["gc"]))
     return render(request, "torneo/tabla.html", {"tabla": tabla})
 
 @login_required
@@ -140,3 +140,25 @@ def estadisticas(request):
         "niveles_labels": niveles_labels, "niveles_valores": niveles_valores,
         "juegos_labels": juegos_labels, "juegos_valores": juegos_valores,
     })
+
+@login_required
+def editar_perfil(request):
+    jugador = getattr(request.user, "jugador", None)
+    if jugador is None:
+        messages.error(request, "Tu cuenta no tiene perfil de jugador.")
+        return redirect("torneo:home")
+
+    if request.method == "POST":
+        form_u = UsuarioForm(request.POST, instance=request.user)
+        form_p = PerfilForm(request.POST, request.FILES, instance=jugador)   # FILES: archivos
+        if form_u.is_valid() and form_p.is_valid():
+            form_u.save()
+            form_p.save()
+            messages.success(request, "Perfil actualizado, guerrero.")
+            return redirect("torneo:editar_perfil")
+    else:
+        form_u = UsuarioForm(instance=request.user)
+        form_p = PerfilForm(instance=jugador)
+
+    return render(request, "torneo/editar_perfil.html",
+                  {"form_u": form_u, "form_p": form_p, "jugador": jugador})
